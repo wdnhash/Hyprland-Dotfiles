@@ -15,8 +15,13 @@
 # Idempotente: pode rodar de novo sem quebrar (usa --needed).
 # NÃO rode como root. Ele chama sudo onde precisa.
 #
-# ⚠ As configs são SYMLINKADAS pra esta pasta — não apague nem mova
-#   a pasta dotfiles depois de rodar, ou os links quebram.
+# Premissa: CachyOS (edição Hyprland) já traz a base — Hyprland, Noctalia,
+# PipeWire, NetworkManager, fontes, utilitários Wayland, etc. Aqui só
+# instalamos os softwares PESSOAIS. Precisa de algo a mais? Adicione na
+# lista PKG_APPS / AUR_APPS abaixo.
+#
+# As configs são COPIADAS pras pastas padrão (~/.config etc.). Editar lá
+# NÃO altera o repo — reedite aqui e rode o script de novo pra atualizar.
 
 set -euo pipefail
 
@@ -79,7 +84,7 @@ echo
 # ── grupos opcionais ──
 WANT_APPS=0;    ask_yn "Apps pessoais (discord, zed, obsidian, spotify, zen-browser, onlyoffice)?" s && WANT_APPS=1
 WANT_GAME=0;    ask_yn "Gaming (steam, gamemode, mangohud, gamescope + libs 32-bit)?" s && WANT_GAME=1
-WANT_GNOME=0;   ask_yn "Apps GNOME (nautilus, calculadora, evince, etc.)?" s && WANT_GNOME=1
+WANT_GNOME=0;   ask_yn "Apps GNOME (nautilus, calculadora, evince, etc. — no lugar dos do KDE)?" s && WANT_GNOME=1
 WANT_FLATPAK=0; ask_yn "Flatpak + Bitwarden?" s && WANT_FLATPAK=1
 WANT_CLAUDE=0;  ask_yn "Claude Code (CLI da Anthropic)?" s && WANT_CLAUDE=1
 echo
@@ -116,60 +121,27 @@ fi
 
 # ═══════════════════════════════════════════════════════════════
 #  PACOTES DE REPOSITÓRIO (pacman)
+#  Só softwares pessoais — a base (Hyprland, Noctalia, PipeWire,
+#  fontes, utilitários Wayland) já vem no CachyOS. Falta algo?
+#  É só acrescentar na lista certa aqui embaixo.
 # ═══════════════════════════════════════════════════════════════
 
-# Essenciais
-PKG_BASE=(
-    openssh git wget curl btop fish alacritty
-)
-
-# Ferramentas que o config.fish e o starship.toml usam
-PKG_SHELL=(
+# Terminal / shell que os dotfiles usam (sempre instalados)
+PKG_APPS=(
+    alacritty                # terminal
+    fish                     # shell
     starship                 # prompt
     eza                      # ls moderno (aliases ls/ll/tree)
     zoxide                   # `z pasta` p/ pular
     fzf                      # fuzzy finder
+    fastfetch                # fetch minimalista
 )
-
-# Hyprland + stack Wayland (portals, polkit, qt-wayland)
-PKG_HYPR=(
-    hyprland hyprpolkitagent hyprlock
-    xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
-    qt5-wayland qt6-wayland
-    polkit
-)
-
-# Áudio (PipeWire) + controle
-PKG_AUDIO=(
-    pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber pavucontrol
-)
-
-# Utilitários do dia a dia no Wayland
-PKG_UTILS=(
-    brightnessctl playerctl cliphist wl-clipboard grim slurp
-    networkmanager network-manager-applet
-    bluez bluez-utils power-profiles-daemon
-    mpv imv p7zip unzip unrar fastfetch
-)
-
-# Temas / aparência
-PKG_THEME=(
-    nwg-look qt6ct kvantum
-)
-
-# Fontes (inclui Nerd Fonts pros ícones da barra do noctalia)
-PKG_FONTS=(
-    noto-fonts noto-fonts-emoji noto-fonts-cjk
-    ttf-jetbrains-mono-nerd ttf-firacode-nerd
-    ttf-nerd-fonts-symbols ttf-font-awesome
-)
-
-# ── opcionais ──
-PKG_APPS=(
+[[ $WANT_APPS -eq 1 ]] && PKG_APPS+=(
     discord zed obsidian
-    spotify-launcher          # versão "oficial" do Spotify (melhor que o do AUR)
+    spotify-launcher         # versão "oficial" do Spotify (melhor que o do AUR)
 )
 
+# Apps GNOME (preferência sua no lugar dos padrões do KDE)
 PKG_GNOME=(
     nautilus                 # gerenciador de arquivos
     gvfs gvfs-mtp gvfs-smb   # montagem/lixeira/rede/celular no nautilus
@@ -211,9 +183,7 @@ case "$GPU" in
 esac
 
 # monta a lista final
-PKGS=( "${PKG_BASE[@]}" "${PKG_SHELL[@]}" "${PKG_HYPR[@]}" "${PKG_AUDIO[@]}"
-       "${PKG_UTILS[@]}" "${PKG_THEME[@]}" "${PKG_FONTS[@]}" "${PKG_GPU[@]}" )
-[[ $WANT_APPS  -eq 1 ]] && PKGS+=( "${PKG_APPS[@]}" )
+PKGS=( "${PKG_APPS[@]}" "${PKG_GPU[@]}" )
 [[ $WANT_GNOME -eq 1 ]] && PKGS+=( "${PKG_GNOME[@]}" )
 [[ $WANT_GAME  -eq 1 ]] && PKGS+=( "${PKG_GAME[@]}" "${PKG_GPU32[@]}" )
 
@@ -264,22 +234,23 @@ if [[ "$GPU" == "vm" ]] && command -v systemd-detect-virt >/dev/null; then
 fi
 
 # ═══════════════════════════════════════════════════════════════
-#  PACOTES DO AUR (paru) — review do PKGBUILD recomendado
+#  PACOTES DO AUR (paru) — só apps pessoais; review do PKGBUILD recomendado
+#  (Noctalia já vem no CachyOS, não instalamos aqui)
 # ═══════════════════════════════════════════════════════════════
-AUR_PKGS=(
-    noctalia-shell           # o shell (puxa quickshell como dependência)
-    matugen                  # geração dinâmica de cores p/ o noctalia
-    cava                     # visualizador de áudio (widget do noctalia)
-)
+AUR_PKGS=()
 if [[ $WANT_APPS -eq 1 ]]; then
     AUR_PKGS+=(
         zen-browser-bin      # use o -bin: o pacote source costuma falhar no build
         onlyoffice-bin       # suíte office (docx/xlsx/pptx)
     )
 fi
-log "Instalando pacotes do AUR..."
-paru -S --needed "${AUR_PKGS[@]}"
-ok "Pacotes do AUR instalados."
+if [[ ${#AUR_PKGS[@]} -gt 0 ]]; then
+    log "Instalando pacotes do AUR..."
+    paru -S --needed "${AUR_PKGS[@]}"
+    ok "Pacotes do AUR instalados."
+else
+    ok "Nenhum pacote do AUR a instalar."
+fi
 
 # ═══════════════════════════════════════════════════════════════
 #  FLATPAK — Bitwarden
@@ -319,21 +290,21 @@ else
 fi
 
 # ═══════════════════════════════════════════════════════════════
-#  DOTFILES → symlinks pras pastas padrão (backup .bak na 1ª vez)
+#  DOTFILES → copiados pras pastas padrão (backup .bak na 1ª vez)
 # ═══════════════════════════════════════════════════════════════
 DOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-log "Linkando configs (editar em ~/.config = editar no repo)..."
+log "Copiando configs pras pastas padrão..."
 
-deploy() {  # deploy <origem> <destino>  — cria symlink
+deploy() {  # deploy <origem> <destino>  — copia (arquivo ou pasta)
     local src="$1" dst="$2"
     [[ -e "$src" ]] || { warn "não achei $(basename "$src") — pulando"; return 0; }
     mkdir -p "$(dirname "$dst")"
-    # backup só na primeira vez, e só se for arquivo real (não symlink)
-    if [[ -e "$dst" && ! -L "$dst" && ! -e "$dst.bak" ]]; then
+    # backup só na primeira vez (não sobrescreve um .bak já existente)
+    if [[ -e "$dst" && ! -e "$dst.bak" ]]; then
         cp -a "$dst" "$dst.bak"
     fi
     rm -rf "$dst"
-    ln -sfn "$src" "$dst"
+    cp -a "$src" "$dst"
     ok "→ ${dst/#$HOME/\~}"
 }
 
@@ -359,7 +330,7 @@ deploy "$DOT_DIR/themes/gtk/adw-gtk3-dark" "$HOME/.themes/adw-gtk3-dark"
 # Qt (qt6ct): paleta mono
 deploy "$DOT_DIR/config/qt6ct/mono.conf" "$HOME/.config/qt6ct/colors/mono.conf"
 
-ok "Configs linkadas."
+ok "Configs copiadas."
 
 # ═══════════════════════════════════════════════════════════════
 #  QT6CT — gerado aqui (precisa de path absoluto pro scheme)
@@ -404,8 +375,8 @@ ok "Serviços habilitados."
 echo
 ok  "Tudo pronto!"
 echo -e "${C_WARN}Próximos passos manuais:${C_OFF}"
-echo "  • Configs SYMLINKADAS — não mova/apague a pasta dotfiles!"
-echo "  • Rode 'hyprctl monitors all' e ajuste os monitores no config/hypr/hyprland.lua"
+echo "  • Configs COPIADAS — pra atualizar depois, reedite o repo e rode o script de novo"
+echo "  • Rode 'hyprctl monitors all' e ajuste os monitores em ~/.config/hypr/hyprland.lua"
 echo "    (nomes dos outputs, resolução e posição são do setup original)"
 echo "  • No Noctalia: Settings → Colors → selecione 'Monochrome'"
 echo "  • Confira tema/ícones/cursor no nwg-look (adw-gtk3-dark / Colloid-Dark / Bibata)"
