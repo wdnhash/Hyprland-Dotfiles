@@ -1,0 +1,8 @@
+[
+  {
+    "bindings": {
+      "ctrl-b": "workspace::ToggleRightDock",
+      "ctrl-m": "editor::ToggleMinimap"
+    }
+  }
+]

@@ -1,0 +1,148 @@
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║          MONO #1a1a1a — overrides (casa com Hyprland,         ║
+   ║          Alacritty, Noctalia e fish)                           ║
+   ║   Base #1a1a1a • Surface #242424 • Border #2e2e2e              ║
+   ║   Muted #4a4a4a • Text #d4d4d4 • Accent #6e6e6e                ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* superfícies */
+@define-color window_bg_color #1a1a1a;
+@define-color window_fg_color #d4d4d4;
+@define-color view_bg_color #161616;
+@define-color view_fg_color #d4d4d4;
+@define-color headerbar_bg_color #242424;
+@define-color headerbar_fg_color #d4d4d4;
+@define-color headerbar_backdrop_color #1a1a1a;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
+@define-color sidebar_bg_color #242424;
+@define-color sidebar_fg_color #d4d4d4;
+@define-color sidebar_backdrop_color #1f1f1f;
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.25);
+@define-color sidebar_border_color rgba(0, 0, 0, 0.36);
+@define-color secondary_sidebar_bg_color #202020;
+@define-color secondary_sidebar_fg_color #d4d4d4;
+@define-color secondary_sidebar_backdrop_color #1d1d1d;
+@define-color secondary_sidebar_shade_color rgba(0, 0, 0, 0.25);
+@define-color secondary_sidebar_border_color rgba(0, 0, 0, 0.36);
+@define-color card_bg_color rgba(255, 255, 255, 0.06);
+@define-color card_fg_color #d4d4d4;
+@define-color dialog_bg_color #242424;
+@define-color dialog_fg_color #d4d4d4;
+@define-color popover_bg_color #242424;
+@define-color popover_fg_color #d4d4d4;
+@define-color popover_shade_color rgba(0, 0, 0, 0.25);
+@define-color thumbnail_bg_color #242424;
+@define-color thumbnail_fg_color #d4d4d4;
+
+/* acento e semânticas — tudo em escala de cinza */
+@define-color accent_bg_color #6e6e6e;
+@define-color accent_fg_color #f0f0f0;
+@define-color accent_color #bbbbbb;
+@define-color destructive_bg_color #5a5a5a;
+@define-color destructive_fg_color #f0f0f0;
+@define-color destructive_color #9a9a9a;
+@define-color success_bg_color #8a8a8a;
+@define-color success_fg_color #1a1a1a;
+@define-color success_color #aaaaaa;
+@define-color warning_bg_color #a0a0a0;
+@define-color warning_fg_color #1a1a1a;
+@define-color warning_color #c4c4c4;
+@define-color error_bg_color #5a5a5a;
+@define-color error_fg_color #f0f0f0;
+@define-color error_color #9a9a9a;
+
+:root {
+  /* paleta de acentos do libadwaita → cinzas por luminância */
+  --accent-blue: #6e6e6e;
+  --accent-teal: #969696;
+  --accent-green: #8a8a8a;
+  --accent-yellow: #b6b6b6;
+  --accent-orange: #a0a0a0;
+  --accent-red: #5a5a5a;
+  --accent-pink: #9a9a9a;
+  --accent-purple: #7a7a7a;
+  --accent-slate: #4a4a4a;
+  --accent-bg-color: #6e6e6e;
+  --accent-fg-color: #f0f0f0;
+  --accent-color: #bbbbbb;
+  --destructive-bg-color: #5a5a5a;
+  --destructive-fg-color: #f0f0f0;
+  --destructive-color: #9a9a9a;
+  --success-bg-color: #8a8a8a;
+  --success-fg-color: #1a1a1a;
+  --success-color: #aaaaaa;
+  --warning-bg-color: #a0a0a0;
+  --warning-fg-color: #1a1a1a;
+  --warning-color: #c4c4c4;
+  --error-bg-color: #5a5a5a;
+  --error-fg-color: #f0f0f0;
+  --error-color: #9a9a9a;
+  --window-bg-color: @window_bg_color;
+  --headerbar-bg-color: @headerbar_bg_color;
+}
+
+/* ───────────── tweaks originais do adw-gtk3 ───────────── */
+
+notebook > header {
+  background-color: var(--window-bg-color);
+}
+
+.osd, .osd button {
+  border-radius: 24px;
+}
+.osd button {
+  margin: 2px;
+}
+
+headerbar.default-decoration windowcontrols > button {
+  margin: 0 1px;
+}
+headerbar.default-decoration windowcontrols > button > image {
+  padding: 4px;
+}
+headerbar.default-decoration windowcontrols.start {
+  margin-left: 3px;
+}
+headerbar.default-decoration windowcontrols.end {
+  margin-right: 3px;
+}
+
+.background.chromium {
+  background-color: var(--window-bg-color);
+}
+@media (prefers-color-scheme: dark) {
+  .background.chromium {
+    background-color: hsl(from var(--headerbar-bg-color) h calc(s * 1.2) calc(l * 1.2));
+  }
+}
+.background.chromium selection, .background.chromium selection:focus {
+  background-color: color-mix(in srgb, var(--accent-bg-color) 30%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  .background.chromium selection, .background.chromium selection:focus {
+    background-color: var(--accent-bg-color);
+  }
+}
+.background.chromium selection, .background.chromium selection:focus {
+  color: var(--accent-fg-color);
+}
+.background.chromium windowcontrols > button {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  color: var(--window-fg-color);
+  min-width: 24px;
+  padding: 0;
+  box-shadow: none;
+  border-radius: 100%;
+  margin: 0 4px;
+  transition: background 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.background.chromium windowcontrols > button:hover {
+  background-color: color-mix(in srgb, currentColor 15%, transparent);
+}
+.background.chromium windowcontrols > button:active {
+  background-color: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+tooltip.background.chromium {
+  background-color: rgba(26, 26, 26, 0.85);
+}

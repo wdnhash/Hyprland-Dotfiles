@@ -1,0 +1,63 @@
+// ╔══════════════════════════════════════════════════════════════╗
+// ║              FASTFETCH — minimalista mono                      ║
+// ╚══════════════════════════════════════════════════════════════╝
+// Local: ~/.config/fastfetch/config.jsonc
+//
+// Layout:
+//   Hi wenderson
+//
+//   OS   >  CachyOS
+//   KER  >  6.x.x
+//   ...
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": null,
+  "display": {
+    "separator": ">  ",
+    "key": {
+      "width": 5
+    },
+    "color": {
+      "keys": "1;37",
+      "title": "1;37"
+    }
+  },
+  "modules": [
+    "break",
+    {
+      "type": "title",
+      "format": "Hi {user-name}"
+    },
+    "break",
+    {
+      "type": "os",
+      "key": "OS",
+      "format": "{name}"
+    },
+    {
+      "type": "kernel",
+      "key": "KER",
+      "format": "{release}"
+    },
+    {
+      "type": "packages",
+      "key": "PKG"
+    },
+    {
+      "type": "shell",
+      "key": "SH",
+      "format": "{pretty-name}"
+    },
+    {
+      "type": "terminal",
+      "key": "TER",
+      "format": "{pretty-name}"
+    },
+    {
+      "type": "wm",
+      "key": "WM",
+      "format": "{pretty-name}"
+    },
+    "break"
+  ]
+}

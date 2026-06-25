@@ -1,0 +1,104 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║                  ALACRITTY  —  mono #1a1a1a                    ║
+# ║   Casado com o tema do Zed (Min Dark) e do Hyprland           ║
+# ╚══════════════════════════════════════════════════════════════╝
+# Local:  ~/.config/alacritty/alacritty.toml
+# Paleta: bg #1a1a1a • fg #d4d4d4 • cursor #bbbbbb • sel #3a3a3a
+
+[general]
+live_config_reload = true
+
+[env]
+# xterm-256color = melhor compatibilidade ao dar SSH em máquinas
+# que não têm o terminfo do alacritty. Troque p/ "alacritty" se quiser
+# os recursos completos só localmente.
+TERM = "xterm-256color"
+
+[window]
+opacity         = 0.92      # deixa o blur do Hyprland aparecer de leve
+decorations     = "None"    # sem titlebar (tiling do Hyprland cuida disso)
+startup_mode    = "Windowed"
+dynamic_padding = true
+
+[window.padding]
+x = 14
+y = 14
+
+[font]
+size = 12.0
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"   # pacote: ttf-jetbrains-mono-nerd
+style  = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style  = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style  = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style  = "Bold Italic"
+
+[font.offset]
+# Respiro entre linhas, ecoando o line-height espaçado do seu Zed.
+# Aumente y p/ mais ar, diminua p/ mais compacto.
+x = 0
+y = 4
+
+[cursor]
+unfocused_hollow = true
+
+[cursor.style]
+shape    = "Beam"   # = "bar" do Zed
+blinking = "Off"    # cursor_blink: false
+
+[mouse]
+hide_when_typing = true
+
+[scrolling]
+history = 10000
+
+# ───────────── CORES (escala de cinza monocromática) ─────────────
+[colors]
+# Negrito NÃO vira cor "bright" (evita texto lavado demais no mono).
+# Mude p/ true se quiser negrito mais claro.
+draw_bold_text_with_bright_colors = false
+
+[colors.primary]
+background     = "#1a1a1a"
+foreground     = "#d4d4d4"
+dim_foreground = "#8a8a8a"
+
+[colors.cursor]
+text   = "#1a1a1a"
+cursor = "#bbbbbb"
+
+[colors.selection]
+text       = "CellForeground"
+background = "#3a3a3a"
+
+# ANSI espalhada por luminância: sem matiz, mas com contraste suficiente
+# pra git diff / ls / btop continuarem legíveis.
+[colors.normal]
+black   = "#1a1a1a"
+red     = "#5a5a5a"
+green   = "#8a8a8a"
+yellow  = "#a0a0a0"
+blue    = "#6e6e6e"
+magenta = "#7a7a7a"
+cyan    = "#969696"
+white   = "#bbbbbb"
+
+[colors.bright]
+black   = "#4a4a4a"
+red     = "#7a7a7a"
+green   = "#aaaaaa"
+yellow  = "#c4c4c4"
+blue    = "#8e8e8e"
+magenta = "#9a9a9a"
+cyan    = "#b6b6b6"
+white   = "#f0f0f0"

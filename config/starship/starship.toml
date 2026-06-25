@@ -1,0 +1,63 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║                   STARSHIP  —  mono #1a1a1a                    ║
+# ╚══════════════════════════════════════════════════════════════╝
+# Local: ~/.config/starship.toml
+# Requer: starship  (pacman -S starship) + JetBrainsMono Nerd Font
+#
+# Prompt em 2 linhas:
+#   pasta  branch  status-git           (linha 1)
+#   ❯                                    (linha 2)
+# Só os módulos abaixo aparecem — nada de versões coloridas de
+# node/rust/python quebrando o mono. Pra mostrar alguma, é só
+# adicioná-la ao `format` e estilizar com a paleta.
+
+add_newline = true
+palette = "mono"
+
+format = """
+$directory$git_branch$git_status$cmd_duration
+$character"""
+
+[palettes.mono]
+fg     = "#d4d4d4"
+bright = "#f0f0f0"
+mid    = "#8a8a8a"
+dim    = "#6e6e6e"
+muted  = "#4a4a4a"
+
+[directory]
+style = "fg bold"
+truncation_length = 3
+truncate_to_repo = true
+read_only = " "
+read_only_style = "muted"
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+symbol = " "
+style = "mid"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "dim"
+format = "([$all_status$ahead_behind]($style)) "
+conflicted = "="
+ahead      = "⇡${count}"
+behind     = "⇣${count}"
+diverged   = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked  = "?${count}"
+stashed    = "≡"
+modified   = "!${count}"
+staged     = "+${count}"
+renamed    = "»${count}"
+deleted    = "✘${count}"
+
+[cmd_duration]
+min_time = 2000
+style = "muted"
+format = "[ $duration]($style)"
+
+[character]
+success_symbol = "[❯](fg)"
+error_symbol   = "[❯](bright bold)"
+vimcmd_symbol  = "[❮](mid)"
